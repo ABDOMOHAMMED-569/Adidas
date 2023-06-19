@@ -3,14 +3,14 @@ from adidas
 
 --Calculate The Total Sales 
 
-SELECT SUM([Total Sales])
+SELECT SUM([Total Sales]) AS Totalsales 
 FROM adidas 
 
 
 
 --the Total Sales Of Each City 
 
-SELECT City, SUM([Operating Profit]) AS CityProfit
+SELECT City, SUM([Operating Profit]) AS CityProfit , sum([Units Sold]) AS cityUnits
 FROM adidas 
 GROUP BY CITY
 ORDER BY CityProfit DESC
@@ -26,10 +26,9 @@ GROUP BY [State]
 ORDER BY StateProfit DESC
 
 
-
 ---- Discover data about Region  
 
-SELECT Region, SUM([Total Sales]),SUM([operating profit]),SUM([operating Margin])
+SELECT Region, SUM([Total Sales]) AS RegionSales ,SUM([operating profit]) AS RegionProfit ,SUM([operating Margin]) RegionMargin
 FROM adidas
 where region is not null
 Group by Region 
@@ -72,9 +71,10 @@ ALTER COLUMN Units_Cost AFTER [Total Sales]
 
 --Discover Monthly Sales and Monthly Cost in each month
 
-SELECT YEAR([Invoice Date]) AS Years, MONTH([Invoice Date]) AS Months, SUM([Total Sales]) AS MonthlySales, SUM([Cost Of Goods Sold]) AS MonthlyCost
+
+SELECT DATEFROMPARTS(YEAR([Invoice Date]), MONTH([Invoice Date]), 1) AS InvoiceMonth, SUM([Total Sales]) AS MonthlySales, SUM([Cost Of Goods Sold]) AS MonthlyCost
 FROM adidas
-GROUP BY YEAR([Invoice Date]), MONTH([Invoice Date])
+GROUP BY DATEFROMPARTS(YEAR([Invoice Date]), MONTH([Invoice Date]), 1)
 ORDER BY MonthlySales DESC;
 
 
@@ -82,9 +82,9 @@ ORDER BY MonthlySales DESC;
 
 --the sales in the Days of the highest month making sales 
 
-SELECT DAY([Invoice Date]) AS Day_Of_Month, SUM([Total Sales]) AS DailySales
+SELECT DAY([Invoice Date]) AS [Day], SUM([Total Sales]) AS DailySales,SUM([Operating Margin]) AS DailyMargin
 FROM adidas
-WHERE MONTH([Invoice Date]) = 7
+WHERE MONTH([Invoice Date]) = 7 AND YEAR([Invoice Date]) = 2021
 GROUP BY DAY([Invoice Date])
 ORDER BY DAY([Invoice Date])
 
@@ -115,7 +115,6 @@ select Retailer , SUM([Operating Profit])  AS RetailerProfit
 from adidas
 GROUP BY Retailer 
 ORDER BY RetailerProfit DESC
-
 
 
 
